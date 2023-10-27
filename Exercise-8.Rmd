@@ -1,0 +1,68 @@
+---
+title: "Exercise-8"
+author: "Alexandra Anderson"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+install.packages('pacman')
+pacman::p_load("leaflet","OpenStreetMap","sf","tidyverse")
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+heloderma <- read.csv("Heloderma_morph_data.csv")
+
+specimensmap<- openmap(c( 19.23466,-103.7247),
+                     c(37.08093, -115.5846), type='bing')
+specimens <- openproj(specimensmap, projection = "+proj=longlat +ellps=WGS84 +units=m +no_defs")
+```
+
+
+
+``` {r plot}
+autoplot.OpenStreetMap(specimens) +
+  geom_point(data=heloderma, aes(x = Longitude, y = Latitude, color=Lizard_ID), size = 2, alpha = 0.7) +
+  geom_text(data=heloderma,aes(x = Longitude, y = Latitude, label=Lizard_ID),  color="white", size = 2, vjust=-0.01) +
+  labs(x="Longtitude", y="Latitude") + theme(legend.position = "none")
+```
+
+## Including Plots
+
+```{r filter}
+MXheloderma<- filter(heloderma, State !="Arizona")
+MXheloderma<- filter(MXheloderma, State != "Utah")
+MXheloderma<- filter(MXheloderma, State != "New Mexico")
+
+```
+
+```{r MX}
+MXspecimensmap<- openmap(c( 19.23466,-103.7247),
+                     c(31.72820, -113.0817), type='bing')
+MXspecimens <- openproj(specimensmap, projection = "+proj=longlat +ellps=WGS84 +units=m +no_defs")
+```
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+autoplot.OpenStreetMap(MXspecimens) +
+  geom_point(data=MXheloderma, aes(x = Longitude, y = Latitude, color=Lizard_ID), size = 2, alpha = 0.7) +
+  geom_text(data=MXheloderma,aes(x = Longitude, y = Latitude, label=Lizard_ID),  color="white", size = 1.5, vjust=-0.01) +
+  labs(x="Longtitude", y="Latitude") + theme(legend.position = "none")
+```
+
+```{r}
+leaflet(MXheloderma) %>% 
+  addTiles() %>% 
+  addMarkers(popup = MXheloderma$Lizard_ID,
+             lng = MXheloderma$Longitude, 
+             lat = MXheloderma$Latitude)
+```
+
