@@ -61,8 +61,13 @@ autoplot.OpenStreetMap(MXspecimens) +
 ```{r}
 leaflet(MXheloderma) %>% 
   addTiles() %>% 
-  addMarkers(popup = MXheloderma$Lizard_ID,
-             lng = MXheloderma$Longitude, 
-             lat = MXheloderma$Latitude)
+ addCircleMarkers(popup = MXheloderma$Lizard_ID,
+                   label = MXheloderma$Species,
+                   lng = MXheloderma$Longitude, 
+                   lat = MXheloderma$Latitude,
+                   weight = 2,
+                   color = "grey",
+                   fillColor = "orange",
+                   fillOpacity = 0.9)
 ```
 
