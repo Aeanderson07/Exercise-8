@@ -7,15 +7,16 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-install.packages('pacman')
-pacman::p_load("leaflet","OpenStreetMap","sf","tidyverse")
+pacman::p_load("leaflet","OpenStreetMap","sf","tidyverse", "raster")
 ```
 
-## R Markdown
+## Heloderma Retrieval
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Once again, I am using Heloderma museum specimen data from Dr. Gienger's specimen database. This data set has location information for where these specimens were collected.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+![](images/6a86621b723b4379def61da55cf4e146.jpg)
+
+![](images/R%20(4).jpg)
 
 ```{r cars}
 heloderma <- read.csv("Heloderma_morph_data.csv")
@@ -25,38 +26,44 @@ specimensmap<- openmap(c( 19.23466,-103.7247),
 specimens <- openproj(specimensmap, projection = "+proj=longlat +ellps=WGS84 +units=m +no_defs")
 ```
 
+## Trying All Data Points
 
-
-``` {r plot}
+```{r plot}
 autoplot.OpenStreetMap(specimens) +
   geom_point(data=heloderma, aes(x = Longitude, y = Latitude, color=Lizard_ID), size = 2, alpha = 0.7) +
   geom_text(data=heloderma,aes(x = Longitude, y = Latitude, label=Lizard_ID),  color="white", size = 2, vjust=-0.01) +
   labs(x="Longtitude", y="Latitude") + theme(legend.position = "none")
 ```
 
-## Including Plots
+## Focusing on Heloderma in Mexico
 
-```{r filter}
+```{r filter, include=FALSE}
 MXheloderma<- filter(heloderma, State !="Arizona")
 MXheloderma<- filter(MXheloderma, State != "Utah")
 MXheloderma<- filter(MXheloderma, State != "New Mexico")
 
 ```
 
-```{r MX}
+```{r MX, echo=FALSE}
 MXspecimensmap<- openmap(c( 19.23466,-103.7247),
                      c(31.72820, -113.0817), type='bing')
 MXspecimens <- openproj(specimensmap, projection = "+proj=longlat +ellps=WGS84 +units=m +no_defs")
 ```
 
-You can also embed plots, for example:
+## A Fixed Satellite Map
+
+This map features separate data points with Lizard_ID being the point label.
 
 ```{r pressure, echo=FALSE}
 autoplot.OpenStreetMap(MXspecimens) +
   geom_point(data=MXheloderma, aes(x = Longitude, y = Latitude, color=Lizard_ID), size = 2, alpha = 0.7) +
-  geom_text(data=MXheloderma,aes(x = Longitude, y = Latitude, label=Lizard_ID),  color="white", size = 1.5, vjust=-0.01) +
-  labs(x="Longtitude", y="Latitude") + theme(legend.position = "none")
+  geom_text(data=MXheloderma,aes(x = Longitude, y = Latitude, label=Lizard_ID),  color="white", size = 2, vjust=-0.01) +
+  labs(x="Longtitude", y="Latitude") + theme(legend.position = "none") 
 ```
+
+## The Interactive Map
+
+This map is interactive with the immediate label being what Heloderma species the specimen is and the pop up detail is the Lizard_ID, which is like what is in the fixed map.
 
 ```{r}
 leaflet(MXheloderma) %>% 
@@ -71,3 +78,10 @@ leaflet(MXheloderma) %>%
                    fillOpacity = 0.9)
 ```
 
+## Hang in There
+
+![](images/48036796587_5e100fd1fe_n-01.jpg)
+
+## Happy Halloween!
+
+![](images/gila-monster-halloween-venomous-lizard-pet-owner-light-nikita-goel.jpg)
